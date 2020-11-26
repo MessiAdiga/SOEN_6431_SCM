@@ -74,7 +74,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
     {
         int position = 1;
         int currentState = 0;
-        List<Hit<V>> collectedEmits = new ArrayList<Hit<V>>();
+        List<Hit<V>> collectedEmits = new ArrayList<>();
         for (int i = 0; i < text.length(); ++i)
         {
             currentState = getState(currentState, text.charAt(i));
@@ -226,7 +226,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
             if (hitArray != null)
             {
                 int hitIndex = hitArray[0];
-                return new Hit<V>(position - l[hitIndex], position, v[hitIndex]);
+                return new Hit<>(position - l[hitIndex], position, v[hitIndex]);
             }
             ++position;
         }
@@ -428,7 +428,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
         {
             for (int hit : hitArray)
             {
-                collectedEmits.add(new Hit<V>(position - l[hit], position, v[hit]));
+                collectedEmits.add(new Hit<>(position - l[hit], position, v[hit]));
             }
         }
     }
@@ -547,128 +547,6 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
     }
 
     /**
-     * match exactly by a key
-     *
-     * @param keyChars the char array of the key
-     * @param pos      the begin index of char array
-     * @param len      the length of the key
-     * @param nodePos  the starting position of the node for searching
-     * @return the value index of the key, minus indicates null
-     */
-    private int exactMatchSearch(char[] keyChars, int pos, int len, int nodePos)
-    {
-        int result = -1;
-
-        return getMatched(pos, len, result, keyChars, base[nodePos]);
-    }
-
-//    /**
-//     * Just for debug when I wrote it
-//     */
-//    public void debug()
-//    {
-//        System.out.println("base:");
-//        for (int i = 0; i < base.length; i++)
-//        {
-//            if (base[i] < 0)
-//            {
-//                System.out.println(i + " : " + -base[i]);
-//            }
-//        }
-//
-//        System.out.println("output:");
-//        for (int i = 0; i < output.length; i++)
-//        {
-//            if (output[i] != null)
-//            {
-//                System.out.println(i + " : " + Arrays.toString(output[i]));
-//            }
-//        }
-//
-//        System.out.println("fail:");
-//        for (int i = 0; i < fail.length; i++)
-//        {
-//            if (fail[i] != 0)
-//            {
-//                System.out.println(i + " : " + fail[i]);
-//            }
-//        }
-//
-//        System.out.println(this);
-//    }
-//
-//    @Override
-//    public String toString()
-//    {
-//        String infoIndex = "i    = ";
-//        String infoChar = "char = ";
-//        String infoBase = "base = ";
-//        String infoCheck = "check= ";
-//        for (int i = 0; i < Math.min(base.length, 200); ++i)
-//        {
-//            if (base[i] != 0 || check[i] != 0)
-//            {
-//                infoChar += "    " + (i == check[i] ? " ×" : (char) (i - check[i] - 1));
-//                infoIndex += " " + String.format("%5d", i);
-//                infoBase += " " + String.format("%5d", base[i]);
-//                infoCheck += " " + String.format("%5d", check[i]);
-//            }
-//        }
-//        return "DoubleArrayTrie：" +
-//                "\n" + infoChar +
-//                "\n" + infoIndex +
-//                "\n" + infoBase +
-//                "\n" + infoCheck + "\n" +
-////                "check=" + Arrays.toString(check) +
-////                ", base=" + Arrays.toString(base) +
-////                ", used=" + Arrays.toString(used) +
-//                "size=" + size
-////                ", length=" + Arrays.toString(length) +
-////                ", value=" + Arrays.toString(value) +
-//                ;
-//    }
-//
-//    /**
-//     * 一个顺序输出变量名与变量值的调试类
-//     */
-//    private static class DebugArray
-//    {
-//        Map<String, String> nameValueMap = new LinkedHashMap<String, String>();
-//
-//        public void add(String name, int value)
-//        {
-//            String valueInMap = nameValueMap.get(name);
-//            if (valueInMap == null)
-//            {
-//                valueInMap = "";
-//            }
-//
-//            valueInMap += " " + String.format("%5d", value);
-//
-//            nameValueMap.put(name, valueInMap);
-//        }
-//
-//        @Override
-//        public String toString()
-//        {
-//            String text = "";
-//            for (Map.Entry<String, String> entry : nameValueMap.entrySet())
-//            {
-//                String name = entry.getKey();
-//                String value = entry.getValue();
-//                text += String.format("%-5s", name) + "= " + value + '\n';
-//            }
-//
-//            return text;
-//        }
-//
-//        public void println()
-//        {
-//            System.out.print(this);
-//        }
-//    }
-
-    /**
      * @return the size of the keywords
      */
     public int size()
@@ -742,11 +620,11 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
             {
                 State fakeNode = new State(-(parent.getDepth() + 1));  // 此节点是parent的子节点，同时具备parent的输出
                 fakeNode.addEmit(parent.getLargestValueId());
-                siblings.add(new AbstractMap.SimpleEntry<Integer, State>(0, fakeNode));
+                siblings.add(new AbstractMap.SimpleEntry<>(0, fakeNode));
             }
             for (Map.Entry<Character, State> entry : parent.getSuccess().entrySet())
             {
-                siblings.add(new AbstractMap.SimpleEntry<Integer, State>(entry.getKey() + 1, entry.getValue()));
+                siblings.add(new AbstractMap.SimpleEntry<>(entry.getKey() + 1, entry.getValue()));
             }
             return siblings.size();
         }
@@ -789,7 +667,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
         {
             fail = new int[size + 1];
             output = new int[size + 1][];
-            Queue<State> queue = new ArrayDeque<State>();
+            Queue<State> queue = new ArrayDeque<>();
 
             // 第一步，将深度为1的节点的failure设为根节点
             for (State depthOneState : this.rootState.getStates())
@@ -849,7 +727,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
 
             State root_node = this.rootState;
 
-            List<Map.Entry<Integer, State>> siblings = new ArrayList<Map.Entry<Integer, State>>(root_node.getSuccess().entrySet().size());
+            List<Map.Entry<Integer, State>> siblings = new ArrayList<>(root_node.getSuccess().entrySet().size());
             fetch(root_node, siblings);
             if (!siblings.isEmpty())
                 insert(siblings);
@@ -887,7 +765,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          */
         private void insert(List<Map.Entry<Integer, State>> firstSiblings)
         {
-            Queue<Map.Entry<Integer, List<Map.Entry<Integer, State>>>> siblingQueue = new ArrayDeque<Map.Entry<Integer, List<Map.Entry<Integer, State>>>>();
+            Queue<Map.Entry<Integer, List<Map.Entry<Integer, State>>>> siblingQueue = new ArrayDeque<>();
             siblingQueue.add(new AbstractMap.SimpleEntry<Integer, List<Map.Entry<Integer, State>>>(null, firstSiblings));
 
             while (!siblingQueue.isEmpty())
@@ -914,8 +792,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
             if (allocSize <= pos)
                 resize(pos + 1);
 
-            outer:
-            // 此循环体的目标是找出满足base[begin + a1...an]  == 0的n个空闲空间,a1...an是siblings中的n个节点
+            int goagain = 0;
             while (true)
             {
                 pos++;
@@ -946,8 +823,13 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
                     continue;
 
                 for (int i = 1; i < siblings.size(); i++)
-                    if (check[begin + siblings.get(i).getKey()] != 0)
-                        continue outer;
+                    if (check[begin + siblings.get(i).getKey()] != 0) {
+                    	goagain = 1;
+                    	break;
+                    }
+                if(goagain == 1) {
+                	continue;
+                }
 
                 break;
             }
@@ -971,7 +853,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
 
             for (Map.Entry<Integer, State> sibling : siblings)
             {
-                List<Map.Entry<Integer, State>> new_siblings = new ArrayList<Map.Entry<Integer, State>>(sibling.getValue().getSuccess().entrySet().size() + 1);
+                List<Map.Entry<Integer, State>> new_siblings = new ArrayList<>(sibling.getValue().getSuccess().entrySet().size() + 1);
 
                 if (fetch(sibling.getValue(), new_siblings) == 0)  // 一个词的终止且不为其他词的前缀，其实就是叶子节点
                 {
@@ -980,7 +862,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
                 }
                 else
                 {
-                    siblingQueue.add(new AbstractMap.SimpleEntry<Integer, List<Map.Entry<Integer, State>>>(begin + sibling.getKey(), new_siblings));
+                    siblingQueue.add(new AbstractMap.SimpleEntry<>(begin + sibling.getKey(), new_siblings));
                 }
                 sibling.getValue().setIndex(begin + sibling.getKey());
             }

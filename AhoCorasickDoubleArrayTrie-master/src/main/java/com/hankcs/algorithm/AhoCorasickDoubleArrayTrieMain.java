@@ -7,7 +7,7 @@ public class AhoCorasickDoubleArrayTrieMain {
 	public static void main(String[] args) {
 		
 		// Collect test data set
-        TreeMap<String, String> map = new TreeMap<String, String>();
+        TreeMap<String, String> map = new TreeMap<>();
         String[] keyArray = new String[]
                 {
                         "hers",
@@ -20,7 +20,7 @@ public class AhoCorasickDoubleArrayTrieMain {
             map.put(key, key);
         }
         // Build an AhoCorasickDoubleArrayTrie
-        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<String>();
+        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<>();
         acdat.build(map);
         // Test it
         final String text = "uhers";

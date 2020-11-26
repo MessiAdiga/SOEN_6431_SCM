@@ -59,7 +59,7 @@ public class State
     /**
      * goto 表，也称转移函数。根据字符串的下一个字符转移到下一个状态
      */
-    private Map<Character, State> success = new TreeMap<Character, State>();
+    private Map<Character, State> success = new TreeMap<>();
 
     /**
      * 在双数组中的对应下标
@@ -103,7 +103,7 @@ public class State
     {
         if (this.emits == null)
         {
-            this.emits = new TreeSet<Integer>(Collections.reverseOrder());
+            this.emits = new TreeSet<>(Collections.reverseOrder());
         }
         this.emits.add(keyword);
     }
