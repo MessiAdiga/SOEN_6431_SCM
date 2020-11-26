@@ -1,21 +1,8 @@
 /*
  * AhoCorasickDoubleArrayTrie Project
  *      https://github.com/hankcs/AhoCorasickDoubleArrayTrie
- *
  * Copyright 2008-2016 hankcs <me@hankcs.com>
- * You may modify and redistribute as long as this attribution remains.
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import com.hankcs.algorithm.AhoCorasickDoubleArrayTrie;
@@ -26,16 +13,20 @@ import org.ahocorasick.trie.Trie;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author hankcs
  */
 public class TestAhoCorasickDoubleArrayTrie extends TestCase
 {
+	
+	
     private AhoCorasickDoubleArrayTrie<String> buildASimpleAhoCorasickDoubleArrayTrie()
     {
         // Collect test data set
-        TreeMap<String, String> map = new TreeMap<String, String>();
+        TreeMap<String, String> map = new TreeMap<>();
         String[] keyArray = new String[]
                 {
                         "hers",
@@ -48,7 +39,7 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
             map.put(key, key);
         }
         // Build an AhoCorasickDoubleArrayTrie
-        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<String>();
+        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<>();
         acdat.build(map);
         return acdat;
     }
@@ -62,7 +53,7 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
             @Override
             public void hit(int begin, int end, String value)
             {
-                System.out.printf("[%d:%d]=%s\n", begin, end, value);
+            	System.out.printf("[%d:%d]=%s%n", begin, end, value);
                 assertEquals(text.substring(begin, end), value);
             }
         });
@@ -71,15 +62,15 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
         System.out.println(wordList);
     }
 
-    public void testBuildAndParseSimply() throws Exception
+    public void testBuildAndParseSimply()
     {
         AhoCorasickDoubleArrayTrie<String> acdat = buildASimpleAhoCorasickDoubleArrayTrie();
         validateASimpleAhoCorasickDoubleArrayTrie(acdat);
     }
 
-    public void testBuildVeryLongWord() throws Exception
+    public void testBuildVeryLongWord() throws IOException
     {
-        TreeMap<String, String> map = new TreeMap<String, String>();
+        TreeMap<String, String> map = new TreeMap<>();
 
         int longWordLength = 20000;
 
@@ -104,21 +95,19 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
         assertEquals(longWordLength, result.get(1).end);
     }
 
-    public void testBuildAndParseWithBigFile() throws Exception
+    public void testBuildAndParseWithBigFile() throws IOException
     {
         // Load test data from disk
         Set<String> dictionary = loadDictionary("cn/dictionary.txt");
         final String text = loadText("cn/text.txt");
         // You can use any type of Map to hold data
-        Map<String, String> map = new TreeMap<String, String>();
-//        Map<String, String> map = new HashMap<String, String>();
-//        Map<String, String> map = new LinkedHashMap<String, String>();
+        Map<String, String> map = new TreeMap<>();
         for (String key : dictionary)
         {
             map.put(key, key);
         }
         // Build an AhoCorasickDoubleArrayTrie
-        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<String>();
+        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<>();
         acdat.build(map);
         // Test it
         acdat.parseText(text, new AhoCorasickDoubleArrayTrie.IHit<String>()
@@ -157,11 +146,11 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
 
     public void testMatches()
     {
-        Map<String, Integer> map = new HashMap<String, Integer>();
+        Map<String, Integer> map = new HashMap<>();
         map.put("space", 1);
         map.put("keyword", 2);
         map.put("ch", 3);
-        AhoCorasickDoubleArrayTrie<Integer> trie = new AhoCorasickDoubleArrayTrie<Integer>();
+        AhoCorasickDoubleArrayTrie<Integer> trie = new AhoCorasickDoubleArrayTrie<>();
         trie.build(map);
 
         assertTrue(trie.matches("space"));
@@ -178,11 +167,11 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
 
     public void testFirstMatch()
     {
-        Map<String, Integer> map = new HashMap<String, Integer>();
+        Map<String, Integer> map = new HashMap<>();
         map.put("space", 1);
         map.put("keyword", 2);
         map.put("ch", 3);
-        AhoCorasickDoubleArrayTrie<Integer> trie = new AhoCorasickDoubleArrayTrie<Integer>();
+        AhoCorasickDoubleArrayTrie<Integer> trie = new AhoCorasickDoubleArrayTrie<>();
         trie.build(map);
 
         AhoCorasickDoubleArrayTrie.Hit<Integer> hit = trie.findFirst("space");
@@ -201,10 +190,10 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
         assertNull(trie.findFirst(" no pace"));
     }
 
-    public void testCancellation() throws Exception
+    public void testCancellation()
     {
         // Collect test data set
-        TreeMap<String, String> map = new TreeMap<String, String>();
+        TreeMap<String, String> map = new TreeMap<>();
         String[] keyArray = new String[]
                 {
                         "foo",
@@ -215,7 +204,7 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
             map.put(key, key);
         }
         // Build an AhoCorasickDoubleArrayTrie
-        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<String>();
+        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<>();
         acdat.build(map);
         // count matches
         String haystack = "sfwtfoowercwbarqwrcq";
@@ -244,7 +233,7 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
 
     private Set<String> loadDictionary(String path) throws IOException
     {
-        Set<String> dictionary = new TreeSet<String>();
+        Set<String> dictionary = new TreeSet<>();
         BufferedReader br = new BufferedReader(new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(path), "UTF-8"));
         String line;
         while ((line = br.readLine()) != null)
@@ -268,15 +257,15 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
         }
         ahoCorasickNaive.parseText(""); // More fairly, robert-bor's implementation needs to call this to build ac automata.
         // Build a AhoCorasickDoubleArrayTrie implemented by hankcs
-        AhoCorasickDoubleArrayTrie<String> ahoCorasickDoubleArrayTrie = new AhoCorasickDoubleArrayTrie<String>();
-        TreeMap<String, String> dictionaryMap = new TreeMap<String, String>();
+        AhoCorasickDoubleArrayTrie<String> ahoCorasickDoubleArrayTrie = new AhoCorasickDoubleArrayTrie<>();
+        TreeMap<String, String> dictionaryMap = new TreeMap<>();
         for (String word : dictionary)
         {
             dictionaryMap.put(word, word);  // we use the same text as the property of a word
         }
         ahoCorasickDoubleArrayTrie.build(dictionaryMap);
         // Let's test the speed of the two Aho-Corasick automata
-        System.out.printf("Parsing document which contains %d characters, with a dictionary of %d words.\n", text.length(), dictionary.size());
+        System.out.printf("Parsing document which contains %d characters, with a dictionary of %d words.%n", text.length(), dictionary.size());
         long start = System.currentTimeMillis();
         ahoCorasickNaive.parseText(text);
         long costTimeNaive = System.currentTimeMillis() - start;
@@ -286,48 +275,43 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
             @Override
             public void hit(int begin, int end, String value)
             {
-
+            		//just to get log of hit 
             }
         });
         long costTimeACDAT = System.currentTimeMillis() - start;
-        System.out.printf("%-15s\t%-15s\t%-15s\n", "", "Naive", "ACDAT");
-        System.out.printf("%-15s\t%-15d\t%-15d\n", "time", costTimeNaive, costTimeACDAT);
-        System.out.printf("%-15s\t%-15.2f\t%-15.2f\n", "char/s", (text.length() / (costTimeNaive / 1000.0)), (text.length() / (costTimeACDAT / 1000.0)));
-        System.out.printf("%-15s\t%-15.2f\t%-15.2f\n", "rate", 1.0, costTimeNaive / (double) costTimeACDAT);
+        System.out.printf("%-15s\t%-15s\t%-15s%n", "", "Naive", "ACDAT");
+        System.out.printf("%-15s\t%-15d\t%-15d%n", "time", costTimeNaive, costTimeACDAT);
+        System.out.printf("%-15s\t%-15.2f\t%-15.2f%n", "char/s", (text.length() / (costTimeNaive / 1000.0)), (text.length() / (costTimeACDAT / 1000.0)));
+        System.out.printf("%-15s\t%-15.2f\t%-15.2f%n", "rate", 1.0, costTimeNaive / (double) costTimeACDAT);
         System.out.println("===========================================================================");
     }
 
-    /**
-     * Compare my AhoCorasickDoubleArrayTrie with robert-bor's aho-corasick, notice that robert-bor's aho-corasick is
-     * compiled under jdk1.8, so you will need jdk1.8 to run this test<br>
-     * To avoid JVM wasting time on allocating memory, please use -Xms512m -Xmx512m -Xmn256m .
-     *
-     * @throws Exception
-     */
-    public void testBenchmark() throws Exception
+    public void testBenchmark() throws IOException  			//test for just checking status
     {
         runTest("en/dictionary.txt", "en/text.txt");
         runTest("cn/dictionary.txt", "cn/text.txt");
     }
 
-    public void testSaveAndLoad() throws Exception
+    public void testSaveAndLoad() throws IOException, ClassNotFoundException // test for checking proper saving and loading
     {
-        AhoCorasickDoubleArrayTrie<String> acdat = buildASimpleAhoCorasickDoubleArrayTrie();
+    	
+    	AhoCorasickDoubleArrayTrie<String> acdat = buildASimpleAhoCorasickDoubleArrayTrie();
         final String tmpPath = System.getProperty("java.io.tmpdir").replace("\\\\", "/") + "/acdat.tmp";
         System.out.println("Saving acdat to: " + tmpPath);
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(tmpPath));
         out.writeObject(acdat);
-        out.close();
         System.out.println("Loading acdat from: " + tmpPath);
+        out.close();
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmpPath));
         acdat = (AhoCorasickDoubleArrayTrie<String>) in.readObject();
         validateASimpleAhoCorasickDoubleArrayTrie(acdat);
+        in.close();
     }
 
-    public void testBuildEmptyTrie()
+    public void testBuildEmptyTrie()    // test for building empty tree
     {
-        AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<String>();
-        TreeMap<String, String> map = new TreeMap<String, String>();
+         AhoCorasickDoubleArrayTrie<String> acdat = new AhoCorasickDoubleArrayTrie<>();			// object for main class
+         TreeMap<String, String> map = new TreeMap<>();											// object for generating default tree
         acdat.build(map);
         assertEquals(0, acdat.size());
     }

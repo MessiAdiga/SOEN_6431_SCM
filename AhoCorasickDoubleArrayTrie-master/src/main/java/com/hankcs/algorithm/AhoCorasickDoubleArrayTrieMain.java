@@ -27,7 +27,7 @@ public class AhoCorasickDoubleArrayTrieMain {
         {
             @Override
             public void hit(int begin, int end, String value){
-                System.out.printf("[%d:%d]=%s\n", begin, end-1, value);
+                System.out.printf("[%d:%d]=%s%n", begin, end-1, value);
             }
         });
 

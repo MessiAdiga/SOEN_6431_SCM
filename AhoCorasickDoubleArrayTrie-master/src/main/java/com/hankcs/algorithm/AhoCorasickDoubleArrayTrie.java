@@ -616,7 +616,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
          */
         private void constructOutput(State targetState){
             Collection<Integer> emit = targetState.emit();
-            if (emit == null || emit.size() == 0) return;
+            if (emit == null || emit.isEmpty()) return;
             int[] output = new int[emit.size()];
             Iterator<Integer> it = emit.iterator();
             for (int i = 0; i < output.length; ++i){
@@ -633,10 +633,10 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
             base[0] = 1;
             nextCheckPos = 0;
 
-            State root_node = this.rootState;
+            State rootNode = this.rootState;
 
-            List<Map.Entry<Integer, State>> siblings = new ArrayList<>(root_node.getSuccess().entrySet().size());
-            fetch(root_node, siblings);
+            List<Map.Entry<Integer, State>> siblings = new ArrayList<>(rootNode.getSuccess().entrySet().size());
+            fetch(rootNode, siblings);
             if (!siblings.isEmpty())
                 insert(siblings);
         }
@@ -689,7 +689,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
 
             int begin = 0;
             int pos = Math.max(siblings.get(0).getKey() + 1, nextCheckPos) - 1;
-            int nonzero_num = 0;
+            int nonZeroNum = 0;
             int first = 0;
 
             if (allocSize <= pos)
@@ -703,7 +703,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
                     resize(pos + 1);
 
                 if (check[pos] != 0){
-                    nonzero_num++;
+                    nonZeroNum++;
                     continue;
                 }else if (first == 0){
                     nextCheckPos = pos;
@@ -738,7 +738,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
             // 'next_check_pos' and 'check' is greater than some constant value
             // (e.g. 0.9),
             // new 'next_check_pos' index is written by 'check'.
-            if (1.0 * nonzero_num / (pos - nextCheckPos + 1) >= 0.95)
+            if (1.0 * nonZeroNum / (pos - nextCheckPos + 1) >= 0.95)
                 nextCheckPos = pos;
             used[begin] = true;
 
@@ -749,13 +749,13 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
             }
 
             for (Map.Entry<Integer, State> sibling : siblings){
-                List<Map.Entry<Integer, State>> new_siblings = new ArrayList<>(sibling.getValue().getSuccess().entrySet().size() + 1);
+                List<Map.Entry<Integer, State>> newSiblings = new ArrayList<>(sibling.getValue().getSuccess().entrySet().size() + 1);
 
-                if (fetch(sibling.getValue(), new_siblings) == 0){
+                if (fetch(sibling.getValue(), newSiblings) == 0){
                     base[begin + sibling.getKey()] = (-sibling.getValue().getLargestValueId() - 1);
                     progress++;
                 }else{
-                    siblingQueue.add(new AbstractMap.SimpleEntry<>(begin + sibling.getKey(), new_siblings));
+                    siblingQueue.add(new AbstractMap.SimpleEntry<>(begin + sibling.getKey(), newSiblings));
                 }
                 sibling.getValue().setIndex(begin + sibling.getKey());
             }
