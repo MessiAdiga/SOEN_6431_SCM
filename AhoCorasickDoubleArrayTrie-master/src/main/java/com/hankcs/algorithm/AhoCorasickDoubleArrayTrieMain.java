@@ -1,6 +1,5 @@
 package com.hankcs.algorithm;
 
-import java.util.List;
 import java.util.TreeMap;
 
 public class AhoCorasickDoubleArrayTrieMain {
@@ -30,7 +29,7 @@ public class AhoCorasickDoubleArrayTrieMain {
             @Override
             public void hit(int begin, int end, String value)
             {
-                System.out.printf("[%d:%d]=%s\n", begin, end, value);
+                System.out.printf("[%d:%d]=%s\n", begin, end-1, value);
             }
         });
 

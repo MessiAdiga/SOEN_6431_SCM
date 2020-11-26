@@ -52,7 +52,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
     /**
      * outer value array
      */
-    protected V[] v;
+    transient V[] v;
 
     /**
      * the length of every key
@@ -890,7 +890,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
             Queue<Map.Entry<Integer, List<Map.Entry<Integer, State>>>> siblingQueue = new ArrayDeque<Map.Entry<Integer, List<Map.Entry<Integer, State>>>>();
             siblingQueue.add(new AbstractMap.SimpleEntry<Integer, List<Map.Entry<Integer, State>>>(null, firstSiblings));
 
-            while (siblingQueue.isEmpty() == false)
+            while (!siblingQueue.isEmpty())
             {
                 insert(siblingQueue);
             }
@@ -938,8 +938,8 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
                 if (allocSize <= (begin + siblings.get(siblings.size() - 1).getKey()))
                 {
                     // progress can be zero // 防止progress产生除零错误
-                    double l = (1.05 > 1.0 * keySize / (progress + 1)) ? 1.05 : 1.0 * keySize / (progress + 1);
-                    resize((int) (allocSize * l));
+                    double l1 = (1.05 > 1.0 * keySize / (progress + 1)) ? 1.05 : 1.0 * keySize / (progress + 1);
+                    resize((int) (allocSize * l1));
                 }
 
                 if (used[begin])
