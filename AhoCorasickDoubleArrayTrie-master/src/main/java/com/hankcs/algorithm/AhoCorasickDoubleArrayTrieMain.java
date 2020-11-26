@@ -15,8 +15,7 @@ public class AhoCorasickDoubleArrayTrieMain {
                         "she",
                         "he"
                 };
-        for (String key : keyArray)
-        {
+        for (String key : keyArray){
             map.put(key, key);
         }
         // Build an AhoCorasickDoubleArrayTrie
@@ -27,8 +26,7 @@ public class AhoCorasickDoubleArrayTrieMain {
         acdat.parseText(text, new AhoCorasickDoubleArrayTrie.IHit<String>()
         {
             @Override
-            public void hit(int begin, int end, String value)
-            {
+            public void hit(int begin, int end, String value){
                 System.out.printf("[%d:%d]=%s\n", begin, end-1, value);
             }
         });

@@ -31,8 +31,7 @@ import java.util.*;
  *
  * @author hankcs
  */
-public class AhoCorasickDoubleArrayTrie<V> implements Serializable
-{
+public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
     /**
      * check array of the Double Array Trie structure
      */
@@ -70,18 +69,15 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param text The text
      * @return a list of outputs
      */
-    public List<Hit<V>> parseText(CharSequence text)
-    {
+    public List<Hit<V>> parseText(CharSequence text){
         int position = 1;
         int currentState = 0;
         List<Hit<V>> collectedEmits = new ArrayList<>();
-        for (int i = 0; i < text.length(); ++i)
-        {
+        for (int i = 0; i < text.length(); ++i){
             currentState = getState(currentState, text.charAt(i));
             storeEmits(position, currentState, collectedEmits);
             ++position;
         }
-
         return collectedEmits;
     }
 
@@ -91,18 +87,14 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param text      The text
      * @param processor A processor which handles the output
      */
-    public void parseText(CharSequence text, IHit<V> processor)
-    {
+    public void parseText(CharSequence text, IHit<V> processor){
         int position = 1;
         int currentState = 0;
-        for (int i = 0; i < text.length(); ++i)
-        {
+        for (int i = 0; i < text.length(); ++i){
             currentState = getState(currentState, text.charAt(i));
             int[] hitArray = output[currentState];
-            if (hitArray != null)
-            {
-                for (int hit : hitArray)
-                {
+            if (hitArray != null){
+                for (int hit : hitArray){
                     processor.hit(position - l[hit], position, v[hit]);
                 }
             }
@@ -116,21 +108,16 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param text      The text
      * @param processor A processor which handles the output
      */
-    public void parseText(CharSequence text, IHitCancellable<V> processor)
-    {
+    public void parseText(CharSequence text, IHitCancellable<V> processor){
         int currentState = 0;
-        for (int i = 0; i < text.length(); i++)
-        {
+        for (int i = 0; i < text.length(); i++){
             final int position = i + 1;
             currentState = getState(currentState, text.charAt(i));
             int[] hitArray = output[currentState];
-            if (hitArray != null)
-            {
-                for (int hit : hitArray)
-                {
+            if (hitArray != null){
+                for (int hit : hitArray){
                     boolean proceed = processor.hit(position - l[hit], position, v[hit]);
-                    if (!proceed)
-                    {
+                    if (!proceed){
                         return;
                     }
                 }
@@ -144,18 +131,14 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param text      The text
      * @param processor A processor which handles the output
      */
-    public void parseText(char[] text, IHit<V> processor)
-    {
+    public void parseText(char[] text, IHit<V> processor){
         int position = 1;
         int currentState = 0;
-        for (char c : text)
-        {
+        for (char c : text){
             currentState = getState(currentState, c);
             int[] hitArray = output[currentState];
-            if (hitArray != null)
-            {
-                for (int hit : hitArray)
-                {
+            if (hitArray != null){
+                for (int hit : hitArray){
                     processor.hit(position - l[hit], position, v[hit]);
                 }
             }
@@ -169,18 +152,14 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param text      The text
      * @param processor A processor which handles the output
      */
-    public void parseText(char[] text, IHitFull<V> processor)
-    {
+    public void parseText(char[] text, IHitFull<V> processor){
         int position = 1;
         int currentState = 0;
-        for (char c : text)
-        {
+        for (char c : text){
             currentState = getState(currentState, c);
             int[] hitArray = output[currentState];
-            if (hitArray != null)
-            {
-                for (int hit : hitArray)
-                {
+            if (hitArray != null){
+                for (int hit : hitArray){
                     processor.hit(position - l[hit], position, v[hit], hit);
                 }
             }
@@ -194,15 +173,12 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param text source text to check
      * @return {@code true} if string contains at least one substring
      */
-    public boolean matches(String text)
-    {
+    public boolean matches(String text){
         int currentState = 0;
-        for (int i = 0; i < text.length(); ++i)
-        {
+        for (int i = 0; i < text.length(); ++i){
             currentState = getState(currentState, text.charAt(i));
             int[] hitArray = output[currentState];
-            if (hitArray != null)
-            {
+            if (hitArray != null){
                 return true;
             }
         }
@@ -215,16 +191,13 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param text source text to check
      * @return first match or {@code null} if there are no matches
      */
-    public Hit<V> findFirst(String text)
-    {
+    public Hit<V> findFirst(String text){
         int position = 1;
         int currentState = 0;
-        for (int i = 0; i < text.length(); ++i)
-        {
+        for (int i = 0; i < text.length(); ++i){
             currentState = getState(currentState, text.charAt(i));
             int[] hitArray = output[currentState];
-            if (hitArray != null)
-            {
+            if (hitArray != null){
                 int hitIndex = hitArray[0];
                 return new Hit<>(position - l[hitIndex], position, v[hitIndex]);
             }
@@ -233,15 +206,13 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
         return null;
     }
 
-
     /**
      * Save
      *
      * @param out An ObjectOutputStream object
      * @throws IOException Some IOException
      */
-    public void save(ObjectOutputStream out) throws IOException
-    {
+    public void save(ObjectOutputStream out) throws IOException{
         out.writeObject(base);
         out.writeObject(check);
         out.writeObject(fail);
@@ -257,8 +228,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @throws IOException            If can't read the file from path
      * @throws ClassNotFoundException If the class doesn't exist or matched
      */
-    public void load(ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
+    public void load(ObjectInputStream in) throws IOException, ClassNotFoundException{
         base = (int[]) in.readObject();
         check = (int[]) in.readObject();
         fail = (int[]) in.readObject();
@@ -273,14 +243,11 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param key The key
      * @return value if exist otherwise it return null
      */
-    public V get(String key)
-    {
+    public V get(String key){
         int index = exactMatchSearch(key);
-        if (index >= 0)
-        {
+        if (index >= 0){
             return v[index];
         }
-
         return null;
     }
 
@@ -291,15 +258,12 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param value the value
      * @return successful or not（failure if there is no key）
      */
-    public boolean set(String key, V value)
-    {
+    public boolean set(String key, V value){
         int index = exactMatchSearch(key);
-        if (index >= 0)
-        {
+        if (index >= 0){
             v[index] = value;
             return true;
         }
-
         return false;
     }
 
@@ -310,16 +274,14 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param index The index
      * @return The value
      */
-    public V get(int index)
-    {
+    public V get(int index){
         return v[index];
     }
 
     /**
      * Processor handles the output when hit a keyword
      */
-    public interface IHit<V>
-    {
+    public interface IHit<V>{
         /**
          * Hit a keyword, you can use some code like text.substring(begin, end) to get the keyword
          *
@@ -333,8 +295,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
     /**
      * Processor handles the output when hit a keyword, with more detail
      */
-    public interface IHitFull<V>
-    {
+    public interface IHitFull<V>{
         /**
          * Hit a keyword, you can use some code like text.substring(begin, end) to get the keyword
          *
@@ -349,8 +310,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
     /**
      * Callback that allows to cancel the search process.
      */
-    public interface IHitCancellable<V>
-    {
+    public interface IHitCancellable<V>{
         /**
          * Hit a keyword, you can use some code like text.substring(begin, end) to get the keyword
          *
@@ -367,8 +327,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      *
      * @param <V> the value type
      */
-    public static class Hit<V>
-    {
+    public static class Hit<V>{
         /**
          * the beginning index, inclusive.
          */
@@ -382,16 +341,14 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          */
         public final V value;
 
-        public Hit(int begin, int end, V value)
-        {
+        public Hit(int begin, int end, V value){
             this.begin = begin;
             this.end = end;
             this.value = value;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString(){
             return String.format("[%d:%d]=%s", begin, end, value);
         }
     }
@@ -403,11 +360,9 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param character
      * @return
      */
-    private int getState(int currentState, char character)
-    {
-        int newCurrentState = transitionWithRoot(currentState, character);  // 先按success跳转
-        while (newCurrentState == -1) // 跳转失败的话，按failure跳转
-        {
+    private int getState(int currentState, char character){
+        int newCurrentState = transitionWithRoot(currentState, character);
+        while (newCurrentState == -1){
             currentState = fail[currentState];
             newCurrentState = transitionWithRoot(currentState, character);
         }
@@ -421,13 +376,10 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param currentState
      * @param collectedEmits
      */
-    private void storeEmits(int position, int currentState, List<Hit<V>> collectedEmits)
-    {
+    private void storeEmits(int position, int currentState, List<Hit<V>> collectedEmits){
         int[] hitArray = output[currentState];
-        if (hitArray != null)
-        {
-            for (int hit : hitArray)
-            {
+        if (hitArray != null){
+            for (int hit : hitArray){
                 collectedEmits.add(new Hit<>(position - l[hit], position, v[hit]));
             }
         }
@@ -440,8 +392,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param c
      * @return
      */
-    protected int transition(int current, char c)
-    {
+    protected int transition(int current, char c){
         int b = current;
         int p;
 
@@ -462,32 +413,26 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param c
      * @return
      */
-    protected int transitionWithRoot(int nodePos, char c)
-    {
+    protected int transitionWithRoot(int nodePos, char c){
         int b = base[nodePos];
         int p;
 
         p = b + c + 1;
-        if (b != check[p])
-        {
+        if (b != check[p]){
             if (nodePos == 0) return 0;
             return -1;
         }
-
         return p;
     }
-
 
     /**
      * Build a AhoCorasickDoubleArrayTrie from a map
      *
      * @param map a map containing key-value pairs
      */
-    public void build(Map<String, V> map)
-    {
+    public void build(Map<String, V> map){
         new Builder().build(map);
     }
-
 
     /**
      * match exactly by a key
@@ -495,8 +440,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param key the key
      * @return the index of the key, you can use it as a perfect hash function
      */
-    public int exactMatchSearch(String key)
-    {
+    public int exactMatchSearch(String key){
         return exactMatchSearch(key, 0, 0, 0);
     }
 
@@ -509,38 +453,30 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
      * @param nodePos
      * @return
      */
-    private int exactMatchSearch(String key, int pos, int len, int nodePos)
-    {
+    private int exactMatchSearch(String key, int pos, int len, int nodePos){
         if (len <= 0)
             len = key.length();
         if (nodePos <= 0)
             nodePos = 0;
 
         int result = -1;
-
         char[] keyChars = key.toCharArray();
-
         return getMatched(pos, len, result, keyChars, base[nodePos]);
     }
 
-    private int getMatched(int pos, int len, int result, char[] keyChars, int b1)
-    {
+    private int getMatched(int pos, int len, int result, char[] keyChars, int b1){
         int b = b1;
         int p;
-
-        for (int i = pos; i < len; i++)
-        {
+        for (int i = pos; i < len; i++){
             p = b + (int) (keyChars[i]) + 1;
             if (b == check[p])
                 b = base[p];
             else
                 return result;
         }
-
         p = b; // transition through '\0' to check if it's the end of a word
         int n = base[p];
-        if (b == check[p]) // yes, it is.
-        {
+        if (b == check[p]) { // yes, it is.
             result = -n - 1;
         }
         return result;
@@ -549,16 +485,14 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
     /**
      * @return the size of the keywords
      */
-    public int size()
-    {
+    public int size(){
         return v.length;
     }
 
     /**
      * A builder to build the AhoCorasickDoubleArrayTrie
      */
-    private class Builder
-    {
+    private class Builder{
         /**
          * the root state of trie
          */
@@ -590,18 +524,13 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          * @param map a map containing key-value pairs
          */
         @SuppressWarnings("unchecked")
-        public void build(Map<String, V> map)
-        {
-            // 把值保存下来
+        public void build(Map<String, V> map){
             v = (V[]) map.values().toArray();
             l = new int[v.length];
             Set<String> keySet = map.keySet();
-            // 构建二分trie树
             addAllKeyword(keySet);
-            // 在二分trie树的基础上构建双数组trie树
             buildDoubleArrayTrie(keySet.size());
             used = null;
-            // 构建failure表并且合并output表
             constructFailureStates();
             rootState = null;
             loseWeight();
@@ -614,16 +543,13 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          * @param siblings parent node's child nodes, i . e . the siblings
          * @return the amount of the siblings
          */
-        private int fetch(State parent, List<Map.Entry<Integer, State>> siblings)
-        {
-            if (parent.isAcceptable())
-            {
-                State fakeNode = new State(-(parent.getDepth() + 1));  // 此节点是parent的子节点，同时具备parent的输出
+        private int fetch(State parent, List<Map.Entry<Integer, State>> siblings){
+            if (parent.isAcceptable()){
+                State fakeNode = new State(-(parent.getDepth() + 1));
                 fakeNode.addEmit(parent.getLargestValueId());
                 siblings.add(new AbstractMap.SimpleEntry<>(0, fakeNode));
             }
-            for (Map.Entry<Character, State> entry : parent.getSuccess().entrySet())
-            {
+            for (Map.Entry<Character, State> entry : parent.getSuccess().entrySet()){
                 siblings.add(new AbstractMap.SimpleEntry<>(entry.getKey() + 1, entry.getValue()));
             }
             return siblings.size();
@@ -635,11 +561,9 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          * @param keyword a keyword
          * @param index   the index of the keyword
          */
-        private void addKeyword(String keyword, int index)
-        {
+        private void addKeyword(String keyword, int index){
             State currentState = this.rootState;
-            for (Character character : keyword.toCharArray())
-            {
+            for (Character character : keyword.toCharArray()){
                 currentState = currentState.addState(character);
             }
             currentState.addEmit(index);
@@ -651,11 +575,9 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          *
          * @param keywordSet the collection holding keywords
          */
-        private void addAllKeyword(Collection<String> keywordSet)
-        {
+        private void addAllKeyword(Collection<String> keywordSet){
             int i = 0;
-            for (String keyword : keywordSet)
-            {
+            for (String keyword : keywordSet){
                 addKeyword(keyword, i++);
             }
         }
@@ -663,33 +585,22 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
         /**
          * construct failure table
          */
-        private void constructFailureStates()
-        {
+        private void constructFailureStates(){
             fail = new int[size + 1];
             output = new int[size + 1][];
             Queue<State> queue = new ArrayDeque<>();
-
-            // 第一步，将深度为1的节点的failure设为根节点
-            for (State depthOneState : this.rootState.getStates())
-            {
+            for (State depthOneState : this.rootState.getStates()){
                 depthOneState.setFailure(this.rootState, fail);
                 queue.add(depthOneState);
                 constructOutput(depthOneState);
             }
-
-            // 第二步，为深度 > 1 的节点建立failure表，这是一个bfs
-            while (!queue.isEmpty())
-            {
+            while (!queue.isEmpty()){
                 State currentState = queue.remove();
-
-                for (Character transition : currentState.getTransitions())
-                {
+                for (Character transition : currentState.getTransitions()){
                     State targetState = currentState.nextState(transition);
                     queue.add(targetState);
-
                     State traceFailureState = currentState.failure();
-                    while (traceFailureState.nextState(transition) == null)
-                    {
+                    while (traceFailureState.nextState(transition) == null){
                         traceFailureState = traceFailureState.failure();
                     }
                     State newFailureState = traceFailureState.nextState(transition);
@@ -703,24 +614,21 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
         /**
          * construct output table
          */
-        private void constructOutput(State targetState)
-        {
+        private void constructOutput(State targetState){
             Collection<Integer> emit = targetState.emit();
             if (emit == null || emit.size() == 0) return;
             int[] output = new int[emit.size()];
             Iterator<Integer> it = emit.iterator();
-            for (int i = 0; i < output.length; ++i)
-            {
+            for (int i = 0; i < output.length; ++i){
                 output[i] = it.next();
             }
             AhoCorasickDoubleArrayTrie.this.output[targetState.getIndex()] = output;
         }
 
-        private void buildDoubleArrayTrie(int keySize)
-        {
+        private void buildDoubleArrayTrie(int keySize){
             progress = 0;
             this.keySize = keySize;
-            resize(65536 * 32); // 32个双字节
+            resize(65536 * 32); // 32
 
             base[0] = 1;
             nextCheckPos = 0;
@@ -739,13 +647,11 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          * @param newSize of the new array
          * @return the new-allocated-size
          */
-        private int resize(int newSize)
-        {
+        private int resize(int newSize){
             int[] base2 = new int[newSize];
             int[] check2 = new int[newSize];
             boolean[] used2 = new boolean[newSize];
-            if (allocSize > 0)
-            {
+            if (allocSize > 0){
                 System.arraycopy(base, 0, base2, 0, allocSize);
                 System.arraycopy(check, 0, check2, 0, allocSize);
                 System.arraycopy(used, 0, used2, 0, allocSize);
@@ -763,13 +669,11 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          *
          * @param firstSiblings the initial siblings being inserted
          */
-        private void insert(List<Map.Entry<Integer, State>> firstSiblings)
-        {
+        private void insert(List<Map.Entry<Integer, State>> firstSiblings){
             Queue<Map.Entry<Integer, List<Map.Entry<Integer, State>>>> siblingQueue = new ArrayDeque<>();
             siblingQueue.add(new AbstractMap.SimpleEntry<Integer, List<Map.Entry<Integer, State>>>(null, firstSiblings));
 
-            while (!siblingQueue.isEmpty())
-            {
+            while (!siblingQueue.isEmpty()){
                 insert(siblingQueue);
             }
         }
@@ -779,8 +683,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
          *
          * @param siblingQueue a queue holding all siblings being inserted and the position to insert them
          */
-        private void insert(Queue<Map.Entry<Integer, List<Map.Entry<Integer, State>>>> siblingQueue)
-        {
+        private void insert(Queue<Map.Entry<Integer, List<Map.Entry<Integer, State>>>> siblingQueue){
             Map.Entry<Integer, List<Map.Entry<Integer, State>>> tCurrent = siblingQueue.remove();
             List<Map.Entry<Integer, State>> siblings = tCurrent.getValue();
 
@@ -793,28 +696,23 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
                 resize(pos + 1);
 
             int goagain = 0;
-            while (true)
-            {
+            while (true){
                 pos++;
 
                 if (allocSize <= pos)
                     resize(pos + 1);
 
-                if (check[pos] != 0)
-                {
+                if (check[pos] != 0){
                     nonzero_num++;
                     continue;
-                }
-                else if (first == 0)
-                {
+                }else if (first == 0){
                     nextCheckPos = pos;
                     first = 1;
                 }
 
-                begin = pos - siblings.get(0).getKey(); // 当前位置离第一个兄弟节点的距离
-                if (allocSize <= (begin + siblings.get(siblings.size() - 1).getKey()))
-                {
-                    // progress can be zero // 防止progress产生除零错误
+                begin = pos - siblings.get(0).getKey();
+                if (allocSize <= (begin + siblings.get(siblings.size() - 1).getKey())){
+                    // progress can be zero
                     double l1 = (1.05 > 1.0 * keySize / (progress + 1)) ? 1.05 : 1.0 * keySize / (progress + 1);
                     resize((int) (allocSize * l1));
                 }
@@ -841,27 +739,22 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
             // (e.g. 0.9),
             // new 'next_check_pos' index is written by 'check'.
             if (1.0 * nonzero_num / (pos - nextCheckPos + 1) >= 0.95)
-                nextCheckPos = pos; // 从位置 next_check_pos 开始到 pos 间，如果已占用的空间在95%以上，下次插入节点时，直接从 pos 位置处开始查找
+                nextCheckPos = pos;
             used[begin] = true;
 
             size = (size > begin + siblings.get(siblings.size() - 1).getKey() + 1) ? size : begin + siblings.get(siblings.size() - 1).getKey() + 1;
 
-            for (Map.Entry<Integer, State> sibling : siblings)
-            {
+            for (Map.Entry<Integer, State> sibling : siblings){
                 check[begin + sibling.getKey()] = begin;
             }
 
-            for (Map.Entry<Integer, State> sibling : siblings)
-            {
+            for (Map.Entry<Integer, State> sibling : siblings){
                 List<Map.Entry<Integer, State>> new_siblings = new ArrayList<>(sibling.getValue().getSuccess().entrySet().size() + 1);
 
-                if (fetch(sibling.getValue(), new_siblings) == 0)  // 一个词的终止且不为其他词的前缀，其实就是叶子节点
-                {
+                if (fetch(sibling.getValue(), new_siblings) == 0){
                     base[begin + sibling.getKey()] = (-sibling.getValue().getLargestValueId() - 1);
                     progress++;
-                }
-                else
-                {
+                }else{
                     siblingQueue.add(new AbstractMap.SimpleEntry<>(begin + sibling.getKey(), new_siblings));
                 }
                 sibling.getValue().setIndex(begin + sibling.getKey());
@@ -869,8 +762,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
 
             // Insert siblings
             Integer parentBaseIndex = tCurrent.getKey();
-            if (parentBaseIndex != null)
-            {
+            if (parentBaseIndex != null){
                 base[parentBaseIndex] = begin;
             }
         }
@@ -878,8 +770,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable
         /**
          * free the unnecessary memory
          */
-        private void loseWeight()
-        {
+        private void loseWeight(){
             int[] nbase = new int[size + 65535];
             System.arraycopy(base, 0, nbase, 0, size);
             base = nbase;
