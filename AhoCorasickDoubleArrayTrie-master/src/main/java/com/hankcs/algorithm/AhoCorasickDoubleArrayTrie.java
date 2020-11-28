@@ -33,6 +33,10 @@ import java.util.*;
  */
 public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5130124839413888122L;
+	/**
      * check array of the Double Array Trie structure
      */
     protected int[] check;
@@ -617,12 +621,12 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
         private void constructOutput(State targetState){
             Collection<Integer> emit = targetState.emit();
             if (emit == null || emit.isEmpty()) return;
-            int[] output = new int[emit.size()];
+            int[] constructedOutput = new int[emit.size()];
             Iterator<Integer> it = emit.iterator();
-            for (int i = 0; i < output.length; ++i){
-                output[i] = it.next();
+            for (int i = 0; i < constructedOutput.length; ++i){
+                constructedOutput[i] = it.next();
             }
-            AhoCorasickDoubleArrayTrie.this.output[targetState.getIndex()] = output;
+            AhoCorasickDoubleArrayTrie.this.output[targetState.getIndex()] = constructedOutput;
         }
 
         private void buildDoubleArrayTrie(int keySize){
@@ -660,8 +664,9 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
             base = base2;
             check = check2;
             used = used2;
-
-            return allocSize = newSize;
+            allocSize = newSize;
+            
+            return allocSize;
         }
 
         /**
@@ -738,8 +743,9 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
             // 'next_check_pos' and 'check' is greater than some constant value
             // (e.g. 0.9),
             // new 'next_check_pos' index is written by 'check'.
-            if (1.0 * nonZeroNum / (pos - nextCheckPos + 1) >= 0.95)
+            if (1.0 * nonZeroNum / (pos - nextCheckPos + 1) >= 0.95) {
                 nextCheckPos = pos;
+            }
             used[begin] = true;
 
             size = (size > begin + siblings.get(siblings.size() - 1).getKey() + 1) ? size : begin + siblings.get(siblings.size() - 1).getKey() + 1;

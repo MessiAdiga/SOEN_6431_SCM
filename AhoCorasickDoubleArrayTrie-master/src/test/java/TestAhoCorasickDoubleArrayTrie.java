@@ -13,8 +13,6 @@ import org.ahocorasick.trie.Trie;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author hankcs
@@ -131,10 +129,10 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
             this.countAll = countAll;
         }
 
-        public int getCount()
-        {
-            return count;
-        }
+//        public int getCount()
+//        {
+//            return count;
+//        }
 
         @Override
         public boolean hit(int begin, int end, String value)
