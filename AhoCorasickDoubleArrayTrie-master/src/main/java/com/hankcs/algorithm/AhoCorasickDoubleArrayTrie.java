@@ -20,9 +20,6 @@
 
 package com.hankcs.algorithm;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -129,47 +126,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
         }
     }
 
-    /**
-     * Parse text
-     *
-     * @param text      The text
-     * @param processor A processor which handles the output
-     */
-    public void parseText(char[] text, IHit<V> processor){
-        int position = 1;
-        int currentState = 0;
-        for (char c : text){
-            currentState = getState(currentState, c);
-            int[] hitArray = output[currentState];
-            if (hitArray != null){
-                for (int hit : hitArray){
-                    processor.hit(position - l[hit], position, v[hit]);
-                }
-            }
-            ++position;
-        }
-    }
-
-    /**
-     * Parse text
-     *
-     * @param text      The text
-     * @param processor A processor which handles the output
-     */
-    public void parseText(char[] text, IHitFull<V> processor){
-        int position = 1;
-        int currentState = 0;
-        for (char c : text){
-            currentState = getState(currentState, c);
-            int[] hitArray = output[currentState];
-            if (hitArray != null){
-                for (int hit : hitArray){
-                    processor.hit(position - l[hit], position, v[hit], hit);
-                }
-            }
-            ++position;
-        }
-    }
+  
 
     /**
      * Checks that string contains at least one substring
@@ -210,77 +167,7 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
         return null;
     }
 
-    /**
-     * Save
-     *
-     * @param out An ObjectOutputStream object
-     * @throws IOException Some IOException
-     */
-    public void save(ObjectOutputStream out) throws IOException{
-        out.writeObject(base);
-        out.writeObject(check);
-        out.writeObject(fail);
-        out.writeObject(output);
-        out.writeObject(l);
-        out.writeObject(v);
-    }
-
-    /**
-     * Load data from [ObjectInputStream]
-     *
-     * @param in An ObjectInputStream object
-     * @throws IOException            If can't read the file from path
-     * @throws ClassNotFoundException If the class doesn't exist or matched
-     */
-    public void load(ObjectInputStream in) throws IOException, ClassNotFoundException{
-        base = (int[]) in.readObject();
-        check = (int[]) in.readObject();
-        fail = (int[]) in.readObject();
-        output = (int[][]) in.readObject();
-        l = (int[]) in.readObject();
-        v = (V[]) in.readObject();
-    }
-
-    /**
-     * Get value by a String key, just like a map.get() method
-     *
-     * @param key The key
-     * @return value if exist otherwise it return null
-     */
-    public V get(String key){
-        int index = exactMatchSearch(key);
-        if (index >= 0){
-            return v[index];
-        }
-        return null;
-    }
-
-    /**
-     * Update a value corresponding to a key
-     *
-     * @param key   the key
-     * @param value the value
-     * @return successful or not（failure if there is no key）
-     */
-    public boolean set(String key, V value){
-        int index = exactMatchSearch(key);
-        if (index >= 0){
-            v[index] = value;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Pick the value by index in value array <br>
-     * Notice that to be more efficiently, this method DO NOT check the parameter
-     *
-     * @param index The index
-     * @return The value
-     */
-    public V get(int index){
-        return v[index];
-    }
+   
 
     /**
      * Processor handles the output when hit a keyword
@@ -389,26 +276,6 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
         }
     }
 
-    /**
-     * transition of a state
-     *
-     * @param current
-     * @param c
-     * @return
-     */
-    protected int transition(int current, char c){
-        int b = current;
-        int p;
-
-        p = b + c + 1;
-        if (b == check[p])
-            b = base[p];
-        else
-            return -1;
-
-        p = b;
-        return p;
-    }
 
     /**
      * transition of a state, if the state is root and it failed, then returns the root
@@ -435,56 +302,8 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
      * @param map a map containing key-value pairs
      */
     public void build(Map<String, V> map){
-        new Builder().build(map);
-    }
-
-    /**
-     * match exactly by a key
-     *
-     * @param key the key
-     * @return the index of the key, you can use it as a perfect hash function
-     */
-    public int exactMatchSearch(String key){
-        return exactMatchSearch(key, 0, 0, 0);
-    }
-
-    /**
-     * match exactly by a key
-     *
-     * @param key
-     * @param pos
-     * @param len
-     * @param nodePos
-     * @return
-     */
-    private int exactMatchSearch(String key, int pos, int len, int nodePos){
-        if (len <= 0)
-            len = key.length();
-        if (nodePos <= 0)
-            nodePos = 0;
-
-        int result = -1;
-        char[] keyChars = key.toCharArray();
-        return getMatched(pos, len, result, keyChars, base[nodePos]);
-    }
-
-    private int getMatched(int pos, int len, int result, char[] keyChars, int b1){
-        int b = b1;
-        int p;
-        for (int i = pos; i < len; i++){
-            p = b + (int) (keyChars[i]) + 1;
-            if (b == check[p])
-                b = base[p];
-            else
-                return result;
+        new Builder().build(map); 
         }
-        p = b; // transition through '\0' to check if it's the end of a word
-        int n = base[p];
-        if (b == check[p]) { // yes, it is.
-            result = -n - 1;
-        }
-        return result;
-    }
 
     /**
      * @return the size of the keywords

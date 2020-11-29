@@ -129,10 +129,6 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
             this.countAll = countAll;
         }
 
-//        public int getCount()
-//        {
-//            return count;
-//        }
 
         @Override
         public boolean hit(int begin, int end, String value)
@@ -301,7 +297,7 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
         System.out.println("Loading acdat from: " + tmpPath);
         out.close();
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(tmpPath));
-        acdat = (AhoCorasickDoubleArrayTrie<String>) in.readObject();
+        acdat = (AhoCorasickDoubleArrayTrie<String>)in.readObject();
         validateASimpleAhoCorasickDoubleArrayTrie(acdat);
         in.close();
     }
@@ -313,4 +309,5 @@ public class TestAhoCorasickDoubleArrayTrie extends TestCase
         acdat.build(map);
         assertEquals(0, acdat.size());
     }
+    
 }
