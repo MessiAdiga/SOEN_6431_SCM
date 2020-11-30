@@ -518,53 +518,9 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
 
             if (allocSize <= pos)
                 resize(pos + 1);
+            
+            begin = newinsert(pos, nonZeroNum, first, begin, siblings);
 
-            int goagain = 0;
-            while (true){
-                pos++;
-
-                if (allocSize <= pos)
-                    resize(pos + 1);
-
-                if (check[pos] != 0){
-                    nonZeroNum++;
-                    continue;
-                }else if (first == 0){
-                    nextCheckPos = pos;
-                    first = 1;
-                }
-
-                begin = pos - siblings.get(0).getKey();
-                if (allocSize <= (begin + siblings.get(siblings.size() - 1).getKey())){
-                    // progress can be zero
-                    double l1 = (1.05 > 1.0 * keySize / (progress + 1)) ? 1.05 : 1.0 * keySize / (progress + 1);
-                    resize((int) (allocSize * l1));
-                }
-
-                if (used[begin])
-                    continue;
-
-                for (int i = 1; i < siblings.size(); i++)
-                    if (check[begin + siblings.get(i).getKey()] != 0) {
-                    	goagain = 1;
-                    	break;
-                    }
-                if(goagain == 1) {
-                	continue;
-                }
-
-                break;
-            }
-
-            // -- Simple heuristics --
-            // if the percentage of non-empty contents in check between the
-            // index
-            // 'next_check_pos' and 'check' is greater than some constant value
-            // (e.g. 0.9),
-            // new 'next_check_pos' index is written by 'check'.
-            if (1.0 * nonZeroNum / (pos - nextCheckPos + 1) >= 0.95) {
-                nextCheckPos = pos;
-            }
             used[begin] = true;
 
             size = (size > begin + siblings.get(siblings.size() - 1).getKey() + 1) ? size : begin + siblings.get(siblings.size() - 1).getKey() + 1;
@@ -590,6 +546,67 @@ public class AhoCorasickDoubleArrayTrie<V> implements Serializable{
             if (parentBaseIndex != null){
                 base[parentBaseIndex] = begin;
             }
+        }
+        
+        private int newinsert(int pos, int nonZeroNum, int first, int begin, List<Map.Entry<Integer, State>> siblings) {
+        	int goagain = 0;
+            while (true)
+            {
+                pos++;
+
+                pos = checkPos(allocSize, pos);
+
+                if (check[pos] != 0)
+                {
+                	nonZeroNum++;
+                    continue;
+                }
+                else if (first == 0)
+                {
+                    nextCheckPos = pos;
+                    first = 1;
+                }
+
+                begin = pos - siblings.get(0).getKey();
+                if (allocSize <= (begin + siblings.get(siblings.size() - 1).getKey()))
+                {
+                    // progress can be zero
+                    double l1 = (1.05 > 1.0 * keySize / (progress + 1)) ? 1.05 : 1.0 * keySize / (progress + 1);
+                    resize((int) (allocSize * l1));
+                }
+
+                if (used[begin])
+                    continue;
+
+                for (int i = 1; i < siblings.size(); i++)
+                    if (check[begin + siblings.get(i).getKey()] != 0) {
+                    	goagain = 1;
+                    	break;
+                    }
+                if(goagain == 1) {
+                	continue;
+                }
+                break;
+            }
+
+            // -- Simple heuristics --
+            // if the percentage of non-empty contents in check between the
+            // index
+            // 'next_check_pos' and 'check' is greater than some constant value
+            // (e.g. 0.9),
+            // new 'next_check_pos' index is written by 'check'.
+            if (1.0 * nonZeroNum / (pos - nextCheckPos + 1) >= 0.95)
+                nextCheckPos = pos;
+            return begin;
+        }
+        
+        /**
+         * Check if allocated size is less or equal to position
+         * */
+        private int checkPos(int allocSize, int pos) {
+        	if (allocSize <= pos)
+                resize(pos + 1);
+        	return pos;
         }
 
         /**
